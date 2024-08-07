@@ -4,7 +4,7 @@ from pydantic import BaseModel, Field, validator
 from datetime import datetime
 
 
-class HiredEmployee(BaseModel):
+class HiredEmployeeSchema(BaseModel):
     id: int
     name: str
     datetime: str

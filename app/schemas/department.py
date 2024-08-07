@@ -1,10 +1,10 @@
-"""Model for Job"""
+"""Model for Department"""
 
 from pydantic import BaseModel
 
-class Job(BaseModel):
+class DepartmentSchema(BaseModel):
     id: int
-    job: str
+    department: str
 
     class Config:
         orm_mode = True

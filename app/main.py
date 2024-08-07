@@ -1,16 +1,16 @@
 """Main module for the FastAPI application"""
 
 from fastapi import FastAPI
-from database.database_config import SessionLocal, engine
-from database.database_models import SQLHiredEmployee, SQLDepartment, SQLJob
-from models.hired_employee import HiredEmployee
-from models.department import Department
-from models.job import Job
-
+from routers import hired_employees, departments, jobs
 
 # Initialize App
 app = FastAPI()
 
-@app.get("/")
-def read_root():
-    return {"Hello": "World"}
+# Include routers
+app.include_router(hired_employees.router)
+app.include_router(departments.router)
+app.include_router(jobs.router)
+
+@app.get("/hello")
+def hello():
+    return {"message": "Hello World!"}
