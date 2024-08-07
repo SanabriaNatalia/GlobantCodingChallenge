@@ -1,6 +1,6 @@
 """Model for HiredEmployee"""
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, validator
 from datetime import datetime
 
 
@@ -19,3 +19,6 @@ class HiredEmployee(BaseModel):
         except ValueError:
             raise ValueError("datetime must be in ISO format")
         return v
+    
+    class Config:
+        orm_mode = True

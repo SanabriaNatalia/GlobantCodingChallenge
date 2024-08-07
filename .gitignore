@@ -1,0 +1,23 @@
+# Python
+*.pyc
+__pycache__/
+
+# Environment
+.env
+
+# Virtual Environment
+venv/
+.venv/
+
+# Docker
+*.log
+*.pid
+*.sublime-project
+*.sublime-workspace
+*.swp
+
+# SQL Databases
+*.sqlite3
+
+# alembic
+alembic/versions/*.py

@@ -1,9 +1,11 @@
 """Main module for the FastAPI application"""
 
 from fastapi import FastAPI
-from app.models.hired_employee import HiredEmployee
-from app.models.department import Department
-from app.models.job import Job
+from database.database_config import SessionLocal, engine
+from database.database_models import SQLHiredEmployee, SQLDepartment, SQLJob
+from models.hired_employee import HiredEmployee
+from models.department import Department
+from models.job import Job
 
 
 # Initialize App
