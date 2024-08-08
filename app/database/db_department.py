@@ -22,9 +22,6 @@ def create_department(department: DepartmentSchema, db: Session):
 def create_department_batch(departments: List[DepartmentSchema], db: Session):
     """ Function that creates a list of departments in the database """
 
-    if not (1 <= len(departments) <= 1000):
-        raise ValueError("Batch size must be between 1 and 1000")
-
     successful_inserts = []
     failed_inserts = []
 
@@ -55,5 +52,12 @@ def update_department(department_id: int, department: DepartmentSchema, db: Sess
     """ Function that updates a department by its ID """
     department = db.query(SQLDepartment).filter(SQLDepartment.id == department_id)
     department.update(**department.dict())
+    db.commit()
+    return department.first()
+
+def delete_department(department_id: int, db: Session):
+    """ Function that deletes a department by its ID """
+    department = db.query(SQLDepartment).filter(SQLDepartment.id == department_id)
+    department.delete(synchronize_session=False)
     db.commit()
     return department.first()

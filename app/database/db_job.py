@@ -21,8 +21,6 @@ def create_job(job: JobSchema, db: Session):
 
 def create_job_batch(jobs: List[JobSchema], db: Session):
     """ Function that creates a batch of jobs in the database """
-    if not (1 <= len(jobs) <= 1000):
-        raise ValueError("Batch size must be between 1 and 1000")
 
     successful_inserts = []
     failed_inserts = []

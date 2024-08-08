@@ -1,7 +1,7 @@
 """ File that encapsulates the ORM operations for the HiredEmployee model """
 
 from sqlalchemy.orm.session import Session
-from database.database_models import SQLHiredEmployee
+from database.database_models import SQLHiredEmployee, SQLDepartment, SQLJob
 from schemas.hired_employee import HiredEmployeeSchema
 from typing import List
 import logging
@@ -13,6 +13,15 @@ logger = logging.getLogger(__name__)
 
 def create_hired_employee(hired_employee: HiredEmployeeSchema, db: Session):
     """ Function that creates a hired employee in the database """
+
+    # Verify existence of department_id
+    if not db.query(SQLDepartment).filter(SQLDepartment.id == hired_employee.department_id).first():
+        raise ValueError(f"Department ID {hired_employee.department_id} does not exist")
+    
+    # Verify existence of job_id
+    if not db.query(SQLJob).filter(SQLJob.id == hired_employee.job_id).first():
+        raise ValueError(f"Job ID {hired_employee.job_id} does not exist")
+
     hired_employee = SQLHiredEmployee(**hired_employee.dict())
     db.add(hired_employee)
     db.commit()
@@ -21,20 +30,27 @@ def create_hired_employee(hired_employee: HiredEmployeeSchema, db: Session):
 
 def create_hired_employee_batch(hired_employees: List[HiredEmployeeSchema], db: Session):
     """ Function that creates a batch of hired employees in the database """
-    if not (1 <= len(hired_employees) <= 1000):
-        raise ValueError("Batch size must be between 1 and 1000")
 
     successful_inserts = []
     failed_inserts = []
 
     for employee in hired_employees:
         try:
+            # Verify existence of department_id
+            if not db.query(SQLDepartment).filter(SQLDepartment.id == hired_employee.department_id).first():
+                raise ValueError(f"Department ID {hired_employee.department_id} does not exist")
+            
+            # Verify existence of job_id
+            if not db.query(SQLJob).filter(SQLJob.id == hired_employee.job_id).first():
+                raise ValueError(f"Job ID {hired_employee.job_id} does not exist")
+
             db_hired_employee = SQLHiredEmployee(**employee.dict())
             db.add(db_hired_employee)
             db.commit()
             db.refresh(db_hired_employee)
             successful_inserts.append(db_hired_employee)
             logger.info(f"Successfully inserted: {employee.dict()}")
+
         except Exception as e:
             db.rollback()
             failed_inserts.append({"record": employee.dict(), "error": str(e)})

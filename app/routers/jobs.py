@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException
 from schemas.job import JobSchema
 from database import db_job
 from sqlalchemy.orm.session import Session
@@ -32,4 +32,3 @@ def get_job_by_id(job_id: int, db: Session = Depends(get_db)):
     if job is None:
         raise HTTPException(status_code=404, detail="Job not found")
     return job
-    

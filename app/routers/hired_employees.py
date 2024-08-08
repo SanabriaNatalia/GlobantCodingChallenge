@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException
 from schemas.hired_employee import HiredEmployeeSchema
 from database import db_hired_employee
 from sqlalchemy.orm.session import Session
@@ -13,7 +13,10 @@ router = APIRouter(
 
 @router.post("/")
 def create_hired_employee(request : HiredEmployeeSchema, db: Session = Depends(get_db)):
-    return db_hired_employee.create_hired_employee(request, db)
+    try:
+        return db_hired_employee.create_hired_employee(request, db)
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
 
 @router.post("/batch")
 def create_hired_employee_batch(request: List[HiredEmployeeSchema], db: Session = Depends(get_db)):
@@ -32,4 +35,3 @@ def get_hired_employee_by_id(hired_employee_id: int, db: Session = Depends(get_d
     if hired_employee is None:
         raise HTTPException(status_code=404, detail="Hired employee not found")
     return hired_employee
-    
