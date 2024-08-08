@@ -1,7 +1,10 @@
 """Main module for the FastAPI application"""
 
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException, Depends
 from routers import hired_employees, departments, jobs
+from load_csv import load_data
+from database.database_config import get_db
+from sqlalchemy.orm.session import Session
 
 # Initialize App
 app = FastAPI()
