@@ -49,3 +49,17 @@ def get_all_hired_employees(db: Session):
 def get_hired_employee_by_id(hired_employee_id: int, db: Session):
     """ Function that retrieves a hired employee by its ID """
     return db.query(SQLHiredEmployee).filter(SQLHiredEmployee.id == hired_employee_id).first()
+
+def update_hired_employee(hired_employee_id: int, hired_employee: HiredEmployeeSchema, db: Session):
+    """ Function that updates a hired employee by its ID """
+    employee = db.query(SQLHiredEmployee).filter(SQLHiredEmployee.id == hired_employee_id)
+    employee.update(**hired_employee.dict())
+    db.commit()
+    return employee.first()
+
+def delete_hired_employee(hired_employee_id: int, db: Session):
+    """ Function that deletes a hired employee by its ID """
+    employee = db.query(SQLHiredEmployee).filter(SQLHiredEmployee.id == hired_employee_id)
+    employee.delete(synchronize_session=False)
+    db.commit()
+    return employee.first()

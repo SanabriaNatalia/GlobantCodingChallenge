@@ -49,4 +49,17 @@ def get_all_jobs(db: Session):
 def get_job_by_id(job_id: int, db: Session):
     """ Function that retrieves a job by its ID """
     return db.query(SQLJob).filter(SQLJob.id == job_id).first()
-    
+
+def update_job(job_id: int, job: JobSchema, db: Session):
+    """ Function that updates a job by its ID """
+    job = db.query(SQLJob).filter(SQLJob.id == job_id)
+    job.update(**job.dict())
+    db.commit()
+    return job.first()
+
+def delete_job(job_id: int, db: Session):
+    """ Function that deletes a job by its ID """
+    job = db.query(SQLJob).filter(SQLJob.id == job_id)
+    job.delete()
+    db.commit()
+    return job.first()
