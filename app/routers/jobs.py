@@ -22,6 +22,14 @@ def create_job_batch(request: List[JobSchema], db: Session = Depends(get_db)):
     successful_inserts, failed_inserts = db_job.create_job_batch(request, db)
     return {"successful_inserts": successful_inserts, "failed_inserts": failed_inserts}
 
-@router.get("/all", response_model=List[JobSchema])
+@router.get("/", response_model=List[JobSchema])
 def get_all_jobs(db: Session = Depends(get_db)):
     return db_job.get_all_jobs(db)
+
+@router.get("/{job_id}", response_model=JobSchema)
+def get_job_by_id(job_id: int, db: Session = Depends(get_db)):
+    job = db_job.get_job_by_id(job_id, db)
+    if job is None:
+        raise HTTPException(status_code=404, detail="Job not found")
+    return job
+    

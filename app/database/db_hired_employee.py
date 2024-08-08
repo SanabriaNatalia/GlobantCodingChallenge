@@ -45,4 +45,7 @@ def create_hired_employee_batch(hired_employees: List[HiredEmployeeSchema], db: 
 def get_all_hired_employees(db: Session):
     """ Function that retrieves all hired employees from the database """
     return db.query(SQLHiredEmployee).all()
-    
+
+def get_hired_employee_by_id(hired_employee_id: int, db: Session):
+    """ Function that retrieves a hired employee by its ID """
+    return db.query(SQLHiredEmployee).filter(SQLHiredEmployee.id == hired_employee_id).first()

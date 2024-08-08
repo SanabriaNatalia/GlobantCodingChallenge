@@ -45,4 +45,8 @@ def create_job_batch(jobs: List[JobSchema], db: Session):
 def get_all_jobs(db: Session):
     """ Function that retrieves all jobs from the database """
     return db.query(SQLJob).all()
+
+def get_job_by_id(job_id: int, db: Session):
+    """ Function that retrieves a job by its ID """
+    return db.query(SQLJob).filter(SQLJob.id == job_id).first()
     

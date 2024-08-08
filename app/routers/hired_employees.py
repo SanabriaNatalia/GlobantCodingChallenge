@@ -22,6 +22,14 @@ def create_hired_employee_batch(request: List[HiredEmployeeSchema], db: Session 
     successful_inserts, failed_inserts = db_hired_employee.create_hired_employee_batch(request, db)
     return {"successful_inserts": successful_inserts, "failed_inserts": failed_inserts}
 
-@router.get("/all", response_model=List[HiredEmployeeSchema])
+@router.get("/", response_model=List[HiredEmployeeSchema])
 def get_all_hired_employees(db: Session = Depends(get_db)):
     return db_hired_employee.get_all_hired_employees(db)
+
+@router.get("/{hired_employee_id}", response_model=HiredEmployeeSchema)
+def get_hired_employee_by_id(hired_employee_id: int, db: Session = Depends(get_db)):
+    hired_employee = db_hired_employee.get_hired_employee_by_id(hired_employee_id, db)
+    if hired_employee is None:
+        raise HTTPException(status_code=404, detail="Hired employee not found")
+    return hired_employee
+    

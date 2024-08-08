@@ -46,4 +46,8 @@ def create_department_batch(departments: List[DepartmentSchema], db: Session):
 def get_all_departments(db: Session):
     """ Function that retrieves all departments from the database """
     return db.query(SQLDepartment).all()
+
+def get_department_by_id(department_id: int, db: Session):
+    """ Function that retrieves a department by its ID """
+    return db.query(SQLDepartment).filter(SQLDepartment.id == department_id).first()
     
