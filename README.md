@@ -67,10 +67,10 @@ cd GlobantCodingChallenge
 2. **SetUp Environment Variables**
 
 ```
-POSTGRES_DB=your_database_name
-POSTGRES_USER=your_username
-POSTGRES_PASSWORD=your_password
 DATABASE_URL=postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@pg-globantchallenge-use-prod.postgres.database.azure.com:5432/${POSTGRES_DB}?sslmode=require
+AZURE_STORAGE_CONNECTION_STRING=DefaultEndpointsProtocol=https;AccountName=${ACCOUNT_NAME};AccountKey=${ACCOUNT_KEY};EndpointSuffix=core.windows.net
+API_USERNAME=${USERNAME}
+API_PASSWORD=${PASSWORD}
 ```
 
 3. **Build and Run the Docker Image Locally:**
