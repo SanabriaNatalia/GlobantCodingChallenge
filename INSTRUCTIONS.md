@@ -109,4 +109,5 @@ Output example:
 <br>
 
 Not mandatory, but taken into account:
+
 - Create a visual report for each requirement using your favorite tool

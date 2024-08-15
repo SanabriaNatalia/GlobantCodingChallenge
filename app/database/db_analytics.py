@@ -31,7 +31,7 @@ def get_employees_per_quarter(db: Session):
         SQLDepartment.department, SQLJob.job
     ).all()
 
-    results_dict = [
+    serialized_results = [
         {
             "department": result[0],
             "job": result[1],
@@ -41,28 +41,48 @@ def get_employees_per_quarter(db: Session):
         for result in results
     ]
 
-    return results_dict
+    return serialized_results
 
 def get_departments_above_average(db: Session):
-    # Subconsulta para calcular la media
-    avg_hired = db.query(
-        func.avg(func.count(SQLHiredEmployee.id))
+    
+    timestamp_column = func.to_timestamp(SQLHiredEmployee.datetime, 'YYYY-MM-DD"T"HH24:MI:SS"Z"')
+
+    # Subquery to calculate average employees hired in 2021
+
+    dept_counts = db.query(
+        SQLDepartment.id,
+        func.count(SQLHiredEmployee.id).label('employee_count')
+    ).filter(
+        func.extract('year', timestamp_column) == 2021
     ).join(
         SQLDepartment, SQLDepartment.id == SQLHiredEmployee.department_id
-    ).group_by(SQLDepartment.id).scalar()
+    ).group_by(
+        SQLDepartment.id
+    ).subquery()
 
-    # Consulta principal para filtrar departamentos que superan la media
+    avg_hired = db.query(
+        func.avg(dept_counts.c.employee_count)
+    ).scalar()
+
     results = db.query(
         SQLDepartment.id,
         SQLDepartment.department,
-        func.count(SQLHiredEmployee.id).label('employee_count')
+        dept_counts.c.employee_count
     ).join(
-        SQLDepartment, SQLDepartment.id == SQLHiredEmployee.department_id
-    ).group_by(SQLDepartment.id
+        dept_counts, SQLDepartment.id == dept_counts.c.id
+    ).group_by(
+        SQLDepartment.id, SQLDepartment.department, dept_counts.c.employee_count
     ).having(
-        func.count(SQLHiredEmployee.id) > avg_hired
+        dept_counts.c.employee_count > avg_hired
     ).order_by(
-        func.count(SQLHiredEmployee.id).desc()
+        dept_counts.c.employee_count.desc()
     ).all()
+    
+    serialized_results = [
+        {"id": dept.id, 
+        "department": dept.department, 
+        "employee_count": dept.employee_count}
+        for dept in results
+    ]
 
-    return results
+    return serialized_results
