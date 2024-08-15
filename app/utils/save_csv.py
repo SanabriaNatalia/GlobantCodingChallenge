@@ -2,11 +2,12 @@ import pandas as pd
 from azure.storage.blob import BlobServiceClient, BlobClient, ContainerClient
 from io import BytesIO
 import os
+from dotenv import load_dotenv
 
+load_dotenv()
 
 # Connect to the Data Lake
-storage_connection_string = "DefaultEndpointsProtocol=https;AccountName=stgeneralshareddev;AccountKey=jH1hzzbPw/dvdoyEzfB80iS+rtKXMz2mLPLKU8cMIYuaY3TaEG4GsP1nu/9+DCzZdvxteQvl8w1y+AStT6IDaQ==;EndpointSuffix=core.windows.net"
-blob_service_client = BlobServiceClient.from_connection_string(storage_connection_string)
+storage_connection_string = os.getenv('AZURE_STORAGE_CONNECTION_STRING')
 container_name = 'globant-challenge'
 container_client = blob_service_client.get_container_client(container_name)
 

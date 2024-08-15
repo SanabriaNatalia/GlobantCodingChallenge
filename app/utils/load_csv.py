@@ -23,8 +23,7 @@ logger = logging.getLogger(__name__)
 # Cargar las variables desde el archivo .env
 load_dotenv()
 
-DATABASE_URL = "postgresql://globant_admin:DataEngineering.2024*@pg-globantchallenge-use-prod.postgres.database.azure.com:5432/postgres?sslmode=require"
-print(f"DATABASE_URL={DATABASE_URL}")
+DATABASE_URL = os.getenv("DATABASE_URL")
 engine = create_engine(DATABASE_URL)
 
 # Dictionary to map entities to their models, CSV files, and schemas
