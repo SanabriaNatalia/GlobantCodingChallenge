@@ -17,6 +17,7 @@ You are a data engineer at Globant and you are about to start an important proje
 
 3. Create a feature to backup for each table and save it in the file system in AVRO format.
 4. Create a feature to restore a certain table with its backup.
+
 You need to publish your code in GitHub. It will be taken into account if frequent updates are made to the repository that allow analyzing the development process.
 
 ### Clarifications
