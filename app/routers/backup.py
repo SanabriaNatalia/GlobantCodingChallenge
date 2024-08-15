@@ -2,6 +2,8 @@
 
 from fastapi import APIRouter, Depends, HTTPException, status
 from utils.backup.backup_db import backup_table
+from utils.backup.restore_db import restore_table_from_backup
+from sqlalchemy.orm import Session
 from database.database_config import get_db
 
 router = APIRouter(
@@ -11,10 +13,10 @@ router = APIRouter(
 )
 
 @router.post("/backup/{table_name}")
-def create_backup(table_name: str):
+def create_backup(table_name: str, db: Session = Depends(get_db)):
     """Endpoint to trigger a backup of a specific table."""
     try:
-        message = backup_table(table_name)
+        message = backup_table(table_name, db)
         return {"status": "success", "message": message}
     except ValueError as e:
         raise HTTPException(status_code=404, detail=str(e))
@@ -22,10 +24,10 @@ def create_backup(table_name: str):
         raise HTTPException(status_code=500, detail=f"An error occurred: {str(e)}")
 
 @router.post("/restore/{table_name}")
-def restore_backup(table_name: str):
+def restore_backup(table_name: str, db: Session = Depends(get_db)):
     """Endpoint to restore a specific table from a backup."""
     try:
-        message = restore_table_from_backup(table_name)
+        message = restore_table_from_backup(table_name, db)
         return {"status": "success", "message": message}
     except ValueError as e:
         raise HTTPException(status_code=404, detail=str(e))

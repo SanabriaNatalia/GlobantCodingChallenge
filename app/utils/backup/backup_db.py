@@ -14,18 +14,13 @@ from utils.backup.table_mapping import table_mapping, pydantic_to_avro_schema
 # Load environment variables
 load_dotenv()
 
-# Configure the database session
-DATABASE_URL = os.getenv("DATABASE_URL")
-engine = create_engine(DATABASE_URL)
-session = Session(engine)
-
 # Configure Azure Blob Storage
 connection_string = os.getenv("AZURE_STORAGE_CONNECTION_STRING")
 blob_service_client = BlobServiceClient.from_connection_string(connection_string)
 container_name = "globant-challenge"
 container_client = blob_service_client.get_container_client(container_name)
 
-def backup_table(table_name):
+def backup_table(table_name, session: Session):
     """Backup a table to an AVRO file in Azure Blob Storage."""
     
     if table_name not in table_mapping:
