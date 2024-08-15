@@ -1,7 +1,7 @@
 """Main module for the FastAPI application"""
 
 from fastapi import FastAPI, HTTPException, Depends
-from routers import hired_employees, departments, jobs, backup
+from routers import hired_employees, departments, jobs, backup, analytics
 from fastapi.security import HTTPBasic
 from security.auth import authenticate
 from database.database_config import get_db
@@ -17,6 +17,7 @@ app.include_router(hired_employees.router)
 app.include_router(departments.router)
 app.include_router(jobs.router)
 app.include_router(backup.router)
+app.include_router(analytics.router)
 
 @app.get("/")
 def hello():
