@@ -1,111 +1,115 @@
 # Globant Coding Challenge
 
-## Challenge #1
+## Project - Employee Management API
 
-You are a data engineer at Globant and you are about to start an important project. This project is big data migration to a new database system. You need to create a PoC to solve the next requirements:
+This project is part of the Globant coding challenge and involves creating an API to manage data related to employees, departments, and jobs. The API allows the insertion of new data, data exploration, and the creation of automated backups.
 
-1. Move historic data from files in CSV format to the new database.
-2. Create a Rest API service to receive new data. This service must have:
+### Technologies used
 
-    2.1. Each new transaction must fit the data dictionary rules.
+- FastAPI: Python framework used to build the REST API.
+- Docker: For containerization and deployment of the application.
+- SQLAlchemy: ORM used to manage interactions with the PostgreSQL database.
+- Azure:
+    - Azure Database for PostgreSQL: SQL database hosted in the cloud.
+    - Azure Container Registry: Container registry where the Docker image of the application is stored.
+    - Azure Storage Data Lake Gen2: File system used to manage source XLSX files, create CSV files, and store backups.
+    - Azure App Service: The application will be deployed here, running the Docker container in the cloud.
 
-    2.2. Be able to insert batch transactions (1 up to 1000 rows) with one request. 
-    
-    2.3. Receive the data for each table in the same service.
+### Project structure:
 
-    2.4. Keep in mind the data rules for each table.
+```
+GlobantCodingChallenge/
+│
+├── app/
+│   ├── database/
+│   │   ├── database_config.py          # Database configuration with SQLAlchemy
+│   │   ├── database_models.py          # Data models (employees, departments, jobs)
+│   ├── routers/
+│   │   ├── employees.py                # API routes related to employees
+│   │   ├── departments.py              # API routes related to departments
+│   │   ├── jobs.py                     # API routes related to jobs
+│   ├── schemas/                        # Pydantic schemas for data validation
+│   │   ├── department.py
+│   │   ├── hired_employee.py
+│   │   ├── job.py
+│   ├── utils/
+│   │   ├── save_csv.py                 # code for saving xlsx files to csv
+│   │   ├── load_csv.py                 # code for loading csv to Azure PostgreSQL
+│   ├── main.py                         # FastAPI setup and main endpoint definitions
+├── tests/
+│   ├── test_api.py                     # API tests
+├── .env                                # Environment variables (not included in the repository for security)
+├── Dockerfile  # Instructions for building the Docker image
+├── docker-compose.yml  # Service definitions for local deployment
+├── .github/workflows/
+│   ├── deploy.yml                      # GitHub Actions for building and pushing the Docker image to Azure Container Registry
+└── README.md                           # Project documentation
+└── INSTRUCTIONS.md                     # Instructions for the challenge
+└── requirements.txt                    # Libraries needed
+└── requirements-dev.txt                # Extended libraries needed for testing and development purposes
 
-3. Create a feature to backup for each table and save it in the file system in AVRO format.
-4. Create a feature to restore a certain table with its backup.
-You need to publish your code in GitHub. It will be taken into account if frequent updates are made to the repository that allow analyzing the development process.
+```
 
-### Clarifications
-- You decide the origin where the CSV files are located.
-- You decide the destination database type, but it must be a SQL database.
-- The CSV file is comma separated.
-- "Feature" must be interpreted as "Rest API, Stored Procedure, Database functionality,
-Cron job, or any other way to accomplish the requirements".
+### Environment SetUp
 
-Not mandatory, but taken into account:
-- Create a markdown file for the Readme.md
-- Security considerations for your API service
-- Use the Git workflow to create versions
-- Create a Dockerfile to deploy the package
-- Use cloud tools instead of local tools
+1. **Clone the repository**
 
-You can use Python, Java, Go or Scala to solve it!
+```
+git clone https://github.com/your-username/GlobantCodingChallenge.git
+cd GlobantCodingChallenge
+```
 
-### Data Rules
-- Transactions that don't accomplish the rules must not be inserted but they must be logged.
-- All the fields are required.
+2. **SetUp Environment Variables**
 
-### CSV file structures
+```
+POSTGRES_DB=your_database_name
+POSTGRES_USER=your_username
+POSTGRES_PASSWORD=your_password
+DATABASE_URL=postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@pg-globantchallenge-use-prod.postgres.database.azure.com:5432/${POSTGRES_DB}?sslmode=require
+```
 
-**hired_employees.csv:**
+3. **Build and Run the Docker Image Locally:**
 
-| id | INTEGER | Id of the employee |
-| ---- | ------ | -------------- |
-| **name** | STRING | Name and surname of the employee |
-| **datetime** | STRING | Hire datetime in ISO format |
-| **department_id** | INTEGER | Id of the department which the employee was hired for |
-| **job_id** | INTEGER | Id of the job which the employee was hired for |
+    Make sure to install Docker and have the daemon running.
 
+```
+docker-compose up --build
+```
 
-Example:
+4. **Automatic Deployment with GitHub Actions:**
 
-- 4535,Marcelo Gonzalez,2021-07-27T16:02:08Z,1,2 
-- 4572, Lidia Mendez,2021-07-27T19:04:09Z,1,2
+The project is configured with GitHub Actions to automatically build and push the Docker image to Azure Container Registry on every pull request to the main branch.
 
-**departments.csv**
+### Key Features
 
-| id | INTEGER | Id of the department |
-| ---- | ------ | -------- |
-| **department** | STRING | Name of the department |
+1. REST API
 
-- 1, Supply Chain 
-- 2, Maintenance 
-- 3, Staff
+- Employee Management: Endpoints for creating, reading, and listing employees.
+- Department and Job Management: Endpoints for managing departments and jobs, ensuring referential integrity.
 
-**jobs.csv**
+2. Data Processing and Backup Handling:
 
-| id | INTEGER | Id of the job |
-| ---- | ------ | -------- |
-| **job** | STRING | Name of the job |
+- Azure Databricks is used to:
+    - Run scripts for loading data from CSV files into the database.
+    - Generate CSV files from XLSX files stored in Azure Storage Data Lake Gen2.
+    - Create and manage data backups in AVRO format.
+- Azure Storage Data Lake Gen2 serves as the file system to:
+    - Store the source XLSX files.
+    - Create and manage CSV files.
+    - Store backups of the database.
 
-- 1, Recruiter 
-- 2, Manager 
-- 3, Analyst
+3. Application Deployment
 
-<br>
+    The Dockerized application is deployed to Azure App Service, ensuring it is accessible and scalable in the cloud. 
 
----
----
-## Challenge 2
+### Technical Rationale
 
-You need to explore the data that was inserted in the first challenge. The stakeholders ask for some specific metrics they need. You should create an end-point for each requirement.
+- FastAPI: Chosen for its speed, modern features, and ease of use when building RESTful APIs in Python.
+- Docker: Used to containerize the application, ensuring consistent environments across different stages (development, testing, production).
+- SQLAlchemy: Selected for its powerful ORM capabilities, enabling easy interaction with the PostgreSQL database while maintaining clean and maintainable code.
+- Azure: 
+    - Azure Storage Data Lake Gen2: Provides a scalable and secure file system for managing large data files, ensuring the project meets data storage and retrieval needs.
+    - Azure App Service: Chosen for its ease of deployment and scalability, allowing the application to run smoothly in a cloud environment.
 
-### Requirements
+### Running tests
 
-- Number of employees hired for each job and department in 2021 divided by quarter. The table must be ordered alphabetically by department and job.
-
-Output example:
-
-| Department | job | Q1 | Q2 | Q3 | Q4 |
-| --------- | ----| ----| ---- | ---- | --- |
-| Staff | Recruiter | 3 | 0 | 7 | 11 |
-| Staff | Manager |  2 | 1 | 0 | 2 |
-| Supply chain | Manager |  0 | 1 | 3 | 2 |
-||
-
-- List of ids, name and number of employees hired of each department that hired more employees than the mean of employees hired in 2021 for all the departments, ordered by the number of employees hired (descending).
-
-Output example:
-
-| id | department | hired |
-| ----- | ---------- | ----- |
-| 7 | Staff | 45 |
-| 9 | Supply chain | 12 |
-<br>
-
-Not mandatory, but taken into account:
-- Create a visual report for each requirement using your favorite tool

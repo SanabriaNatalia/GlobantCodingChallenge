@@ -2,7 +2,6 @@
 
 from fastapi import FastAPI, HTTPException, Depends
 from routers import hired_employees, departments, jobs
-from load_csv import load_data
 from database.database_config import get_db
 from sqlalchemy.orm.session import Session
 
@@ -14,6 +13,6 @@ app.include_router(hired_employees.router)
 app.include_router(departments.router)
 app.include_router(jobs.router)
 
-@app.get("/hello")
+@app.get("/")
 def hello():
-    return {"message": "Hello World!"}
+    return {"message": "Hello Globant!"}

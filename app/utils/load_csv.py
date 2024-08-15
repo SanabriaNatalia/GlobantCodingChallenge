@@ -1,21 +1,30 @@
+
+import sys
+import os
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..')))
+
 from pyspark.sql import SparkSession
 from pyspark.sql.functions import col, to_timestamp, date_format
 from sqlalchemy.orm import Session
 from sqlalchemy import create_engine
-from database.database_models import SQLHiredEmployee, SQLDepartment, SQLJob
-from database.database_config import SessionLocal, Base, get_db
-from schemas.hired_employee import HiredEmployeeSchema
-from schemas.department import DepartmentSchema
-from schemas.job import JobSchema
-import os
+from app.database.database_models import SQLHiredEmployee, SQLDepartment, SQLJob
+from app.database.database_config import SessionLocal, Base, get_db
+from app.schemas.hired_employee import HiredEmployeeSchema
+from app.schemas.department import DepartmentSchema
+from app.schemas.job import JobSchema
 import logging
 from pydantic import ValidationError
+from dotenv import load_dotenv
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-DATABASE_URL = os.getenv("DATABASE_URL")
+# Cargar las variables desde el archivo .env
+load_dotenv()
+
+DATABASE_URL = "postgresql://globant_admin:DataEngineering.2024*@pg-globantchallenge-use-prod.postgres.database.azure.com:5432/postgres?sslmode=require"
+print(f"DATABASE_URL={DATABASE_URL}")
 engine = create_engine(DATABASE_URL)
 
 # Dictionary to map entities to their models, CSV files, and schemas
@@ -47,6 +56,12 @@ def read_and_validate_csv(spark, entity_info):
     df = spark.read.csv(entity_info["file_path"], header=False, inferSchema=True)
     df = df.toDF(*entity_info["columns"])
     
+    # Convert numeric columns to integers
+    numeric_columns = ['id', 'department_id', 'job_id']
+    for column in numeric_columns:
+        if column in df.columns:
+            df = df.withColumn(column, col(column).cast("int"))
+            
     # Convert timestamp columns if specified
     if "timestamp_columns" in entity_info:
         for column in entity_info["timestamp_columns"]:
