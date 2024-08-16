@@ -4,7 +4,7 @@
 
 This project is part of the Globant coding challenge and involves creating an API to manage data related to employees, departments, and jobs. The API allows the insertion of new data, data exploration, and the creation of automated backups.
 
-### Technologies used
+### Technologies used
 
 - FastAPI: Python framework used to build the REST API.
 - Docker: For containerization and deployment of the application.
