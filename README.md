@@ -105,7 +105,7 @@ The project is configured with GitHub Actions to automatically build and push th
 
 3. Application Deployment
 
-    The Dockerized application is deployed to Azure App Service, ensuring it is accessible and scalable in the cloud. 
+    The Dockerized application is deployed to Azure Container Apps, ensuring it is accessible and scalable in the cloud. A GitHub actions workflow is configured so that any pull-requests onto the main branch will re-deploy the container in Azure Container Registry.
 
 ### Technical Rationale
 
