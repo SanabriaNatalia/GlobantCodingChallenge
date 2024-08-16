@@ -13,7 +13,7 @@ This project is part of the Globant coding challenge and involves creating an AP
     - Azure Database for PostgreSQL: SQL database hosted in the cloud.
     - Azure Container Registry: Container registry where the Docker image of the application is stored.
     - Azure Storage Data Lake Gen2: File system used to manage source XLSX files, create CSV files, and store backups.
-    - Azure App Service: The application will be deployed here, running the Docker container in the cloud.
+    - Azure Container App: The application will be deployed here, running the Docker container in the cloud.
 
 ### Project structure:
 
@@ -114,7 +114,7 @@ The project is configured with GitHub Actions to automatically build and push th
 - SQLAlchemy: Selected for its powerful ORM capabilities, enabling easy interaction with the PostgreSQL database while maintaining clean and maintainable code.
 - Azure: 
     - Azure Storage Data Lake Gen2: Provides a scalable and secure file system for managing large data files, ensuring the project meets data storage and retrieval needs.
-    - Azure App Service: Chosen for its ease of deployment and scalability, allowing the application to run smoothly in a cloud environment.
+    - Azure Container App: Chosen for its flexibility and scalability, allowing the application to run smoothly in a cloud environment while providing robust support for containerized workloads.
 
 ### Security
 
@@ -128,7 +128,4 @@ The API is secured using Basic HTTP Authentication. All POST endpoints, includin
 The authentication logic is handled by a dedicated module (`auth.py`) to maintain modularity and avoid circular dependencies. The credentials are compared using a secure method to prevent timing attacks, and are validated on every request.
 
 To interact with the API, users must provide valid credentials via Basic Auth. This can be done easily through the Swagger UI or tools like Postman.
-
-
-### Running tests
 
